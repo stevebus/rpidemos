@@ -17,6 +17,26 @@
 from __future__ import print_function
 import time
 import RPi.GPIO as GPIO
+import Adafruit_CharLCD as LCD
+
+# Raspberry Pi pin configuration:
+lcd_rs        = 27  # Note this might need to be changed to 21 for older revision Pi's.
+lcd_en        = 22
+lcd_d4        = 25
+lcd_d5        = 24
+lcd_d6        = 23
+lcd_d7        = 18
+lcd_backlight = 4
+
+# Define LCD column and row size for 16x2 LCD.
+lcd_columns = 16
+lcd_rows    = 2
+
+# Initialize the LCD using the pins above.
+lcd = LCD.Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7,
+                           lcd_columns, lcd_rows, lcd_backlight)
+
+msg = "Distance:\n  %5.1f"
 
 # Use BCM GPIO references
 # instead of physical pin numbers
@@ -71,7 +91,12 @@ while 1:
 	# That was the distance there and back so halve the value
 	distance = distance / 2
 
-	print("Distance : {0:5.1f}".format(distance))
+	lcd.clear()
+
+	msg_formatted = msg % (distance)
+
+	print(msg_formatted)
+	lcd.message(msg_formatted)
 
 	time.sleep(1)
 
